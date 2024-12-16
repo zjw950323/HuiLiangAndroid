@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<network-security-config>
+    <domain-config cleartextTrafficPermitted="true">
+        <domain includeSubdomains="true">121.40.43.143</domain> <!-- 允许访问指定的 IP 地址 -->
+        <domain includeSubdomains="true">192.168.20.2</domain> <!-- 允许访问指定的 IP 地址 -->
+    </domain-config>
+</network-security-config>

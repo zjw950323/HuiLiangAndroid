@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/vincentDiagramFragment">
+    <fragment
+        android:id="@+id/vincentDiagramFragment"
+        android:name="com.huiliang.aidemo.fragment.VincentDiagramFragment"
+        android:label="VincentDiagramFragment"
+        android:layout="@layout/fragment_vincent_diagram">
+        <action
+            android:id="@+id/action_firstFragment_to_secondFragment"
+            app:destination="@id/mapStorageFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/mapStorageFragment"
+        android:name="com.huiliang.aidemo.fragment.MapStorageFragment"
+        android:label="MapStorageFragment"
+        android:layout="@layout/fragment_map_storage">
+        <action
+            android:id="@+id/action_secondFragment_to_firstFragment"
+            app:destination="@id/vincentDiagramFragment" />
+    </fragment>
+</navigation>
