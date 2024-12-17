@@ -11,6 +11,7 @@ converterScalars = "2.5.0"
 converterSimplexml = "2.5.0"
 fragmentKtx = "1.8.5"
 githubRefreshLayoutKernel = "2.0.6"
+gson = "2.10.1"
 jetbrainsKotlinxCoroutinesAndroid = "1.8.1"
 kotlin = "1.9.21"
 coreKtx = "1.10.1"
@@ -23,6 +24,7 @@ lifecycleRuntimeKtx = "2.8.7"
 loggingInterceptor = "4.9.0"
 material = "1.12.0"
 material3 = "1.3.1"
+mmkvVersion = "1.2.10"
 navigationCompose = "2.8.5"
 navigationFragmentKtx = "2.5.3"
 navigationUiKtx = "2.5.3"
@@ -56,6 +58,7 @@ compiler = { module = "com.github.bumptech.glide:compiler", version.ref = "comGi
 converter-simplexml = { module = "com.squareup.retrofit2:converter-simplexml", version.ref = "converterSimplexml" }
 converter-scalars = { module = "com.squareup.retrofit2:converter-scalars", version.ref = "converterScalars" }
 github-refresh-layout-kernel = { module = "io.github.scwang90:refresh-layout-kernel", version.ref = "githubRefreshLayoutKernel" }
+gson = { module = "com.google.code.gson:gson", version.ref = "gson" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
@@ -70,6 +73,7 @@ refresh-header-classics = { module = "io.github.scwang90:refresh-header-classics
 retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit" }
 retrofit2-converter-gson = { module = "com.squareup.retrofit2:converter-gson", version.ref = "converterGson" }
 retrofit2-kotlin-coroutines-adapter = { module = "com.jakewharton.retrofit:retrofit2-kotlin-coroutines-adapter", version.ref = "retrofit2KotlinCoroutinesAdapter" }
+tencent-mmkv = { module = "com.tencent:mmkv", version.ref = "mmkvVersion" }
 xpopup = { module = "com.github.li-xiaojun:XPopup", version.ref = "xpopup" }
 androidx-ui-tooling-preview-android = { group = "androidx.compose.ui", name = "ui-tooling-preview-android", version.ref = "uiToolingPreviewAndroid" }
 androidx-navigation-fragment = { group = "androidx.navigation", name = "navigation-fragment", version.ref = "navigationFragment" }

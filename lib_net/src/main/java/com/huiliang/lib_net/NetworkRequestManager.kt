@@ -10,12 +10,14 @@ import com.huiliang.lib_net.error.ErrorHandler
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.huiliang.lib_net.interceptors.HeaderInterceptor
+import com.huiliang.lib_net.interceptors.TimeoutInterceptor
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.HttpException
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import java.util.concurrent.TimeUnit
 
 /**
  * Time: 2024/5/30
@@ -46,7 +48,12 @@ class NetworkRequestManager private constructor(
         }
         client = OkHttpClient.Builder()
             .addInterceptor(logging)
+            .addInterceptor(TimeoutInterceptor())
             .addInterceptor(HeaderInterceptor())
+            .connectTimeout(60, TimeUnit.SECONDS) // 连接超时时间
+            .readTimeout(60, TimeUnit.SECONDS)    // 读取超时时间
+            .writeTimeout(60, TimeUnit.SECONDS)   // 写入超时时间
+            .retryOnConnectionFailure(true)       // 允许自动重试
             .build()
 
         retrofitBuilder = Retrofit.Builder()

@@ -88,4 +88,8 @@ dependencies {
     api libs.permissionx
     //Xpopup
     api libs.xpopup
+    //MMKV
+    api libs.tencent.mmkv
+    //GSON
+    api libs.gson
 }

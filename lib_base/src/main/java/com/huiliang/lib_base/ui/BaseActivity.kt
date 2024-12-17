@@ -56,7 +56,7 @@ abstract class BaseActivity<T : ViewModel, M : ViewDataBinding> : AppCompatActiv
             this.getResources().configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
         LogUtils.e(nightModeFlags)
         if (nightModeFlags == Configuration.UI_MODE_NIGHT_YES) {
-            // 状态栏文字颜色变为黑色
+            // 状态栏文字颜色变为白色
             BarUtils.setStatusBarLightMode(this, false)
         } else {
             // 状态栏文字颜色变为黑色
