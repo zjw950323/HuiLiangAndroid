@@ -3,12 +3,12 @@ package com.huiliang.lib_net
 import android.content.Context
 import com.blankj.utilcode.util.LogUtils
 import com.blankj.utilcode.util.ToastUtils
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import com.huiliang.lib_net.bean.ApiListResponse
 import com.huiliang.lib_net.bean.ApiResponse
 import com.huiliang.lib_net.error.DefaultErrorHandler
 import com.huiliang.lib_net.error.ErrorHandler
-import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
 import com.huiliang.lib_net.interceptors.HeaderInterceptor
 import com.huiliang.lib_net.interceptors.TimeoutInterceptor
 import okhttp3.OkHttpClient

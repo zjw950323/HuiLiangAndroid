@@ -1,6 +1,7 @@
 package com.huiliang.aidemo.fragment
 
 import android.Manifest
+import android.graphics.drawable.Drawable
 import android.os.Build
 import android.text.Editable
 import android.text.TextWatcher
@@ -9,6 +10,10 @@ import com.blankj.utilcode.util.AppUtils
 import com.blankj.utilcode.util.LogUtils
 import com.blankj.utilcode.util.ToastUtils
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.DataSource
+import com.bumptech.glide.load.engine.GlideException
+import com.bumptech.glide.request.RequestListener
+import com.bumptech.glide.request.target.Target
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.huiliang.aidemo.BuildConfig
@@ -59,6 +64,9 @@ class VincentDiagramFragment : BaseFragment<AiViewModel, FragmentVincentDiagramB
     private var needUpdate = true
     private val permission: MutableList<String> = mutableListOf()
 
+    // 新增标志位，用于跟踪图片加载状态
+    private var isImageLoading = false
+
     override fun getContentLayoutId(): Int = R.layout.fragment_vincent_diagram
 
     override fun bindViewModel() {
@@ -98,7 +106,13 @@ class VincentDiagramFragment : BaseFragment<AiViewModel, FragmentVincentDiagramB
                 }
 
             loading.observe(this@VincentDiagramFragment) { isLoading ->
-                toggleLoading(isLoading)
+                if (isLoading) {
+                    toggleLoading(true)
+                } else {
+                    if (!isImageLoading) {
+                        toggleLoading(false)
+                    }
+                }
             }
 
             versionNumber.observe(this@VincentDiagramFragment) { result ->
@@ -121,6 +135,7 @@ class VincentDiagramFragment : BaseFragment<AiViewModel, FragmentVincentDiagramB
                 when (result) {
                     is ResultByCoroutine.Success -> {
                         if (isClick) {
+                            isImageLoading = true
                             mAiPicList.apply {
                                 clear()
                                 addAll(result.data)
@@ -138,6 +153,7 @@ class VincentDiagramFragment : BaseFragment<AiViewModel, FragmentVincentDiagramB
                 when (result) {
                     is ResultByCoroutine.Success -> {
                         if (isClick) {
+                            isImageLoading = true
                             mAiPicList.apply {
                                 clear()
                                 addAll(result.data)
@@ -181,10 +197,29 @@ class VincentDiagramFragment : BaseFragment<AiViewModel, FragmentVincentDiagramB
     // 显示/隐藏加载弹窗
     private fun toggleLoading(isLoading: Boolean) {
         if (isLoading) {
-            popupView?.takeIf { !it.isShow }?.show()
+            // 如果弹窗没有显示，则显示弹窗
+            if (popupView?.isShow == false) {
+                popupView?.show()
+            }
         } else {
-            popupView?.takeIf { it.isShow }?.dismiss()
+            // 如果弹窗正在显示，则隐藏弹窗
+            if (popupView?.isShow == true) {
+                popupView?.dismiss()
+            }
         }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        // 释放 popupView 引用
+        popupView = null
+        progressDialog = null
+    }
+
+    override fun onStop() {
+        super.onStop()
+        // 当 Fragment 停止时，确保隐藏 loading 弹窗
+        toggleLoading(false)
     }
 
     // 加载图片
@@ -198,7 +233,33 @@ class VincentDiagramFragment : BaseFragment<AiViewModel, FragmentVincentDiagramB
         url = SimpleConstant().BASE_PIC_URL + mAiPicList[randomIndex].image_name
         LogUtils.e(url)
         Glide.with(this@VincentDiagramFragment).load(url).placeholder(R.drawable.placeholder)
-            .error(R.drawable.error).into(mViewBinding.ivImg)
+            .error(R.drawable.error).listener(object :RequestListener<Drawable>{
+                override fun onLoadFailed(
+                    e: GlideException?,
+                    model: Any?,
+                    target: Target<Drawable>?,
+                    isFirstResource: Boolean
+                ): Boolean {
+                    // 图片加载失败，隐藏 loading 弹窗
+                    isImageLoading = false
+                    toggleLoading(false)
+                    return false
+                }
+
+                override fun onResourceReady(
+                    resource: Drawable?,
+                    model: Any?,
+                    target: Target<Drawable>?,
+                    dataSource: DataSource?,
+                    isFirstResource: Boolean
+                ): Boolean {
+                    // 图片加载成功，隐藏 loading 弹窗
+                    isImageLoading = false
+                    toggleLoading(false)
+                    return false
+                }
+
+            }).into(mViewBinding.ivImg)
         mAiPicList.removeAt(randomIndex)
     }
 

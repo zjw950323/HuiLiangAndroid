@@ -47,6 +47,7 @@ class DefaultErrorHandler(private val context: Context) : ErrorHandler {
     }
 
     override fun handleError(exception: Throwable): ResultByCoroutine.Error {
+        ToastUtils.showShort(exception.message)
         LogUtils.e("DefaultErrorHandler", "Error: ${exception.message}", exception)
         return ResultByCoroutine.Error(exception)
     }

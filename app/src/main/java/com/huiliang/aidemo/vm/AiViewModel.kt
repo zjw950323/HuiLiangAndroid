@@ -43,11 +43,14 @@ class AiViewModel(context: Context) : BaseViewModel(context) {
         map["description"] = description
         viewModelScope.launch {
             _loading.postValue(true)
-            val mAiPictureInfo = networkRequestManager.fetchListResult({
-                apiService.getImageList(map)
-            }, object : TypeToken<List<AIPicResponseBean>>() {}, "getAIPicture")
-            _aiPictureInfoData.value = mAiPictureInfo
-            _loading.postValue(false)
+            try {
+                val mAiPictureInfo = networkRequestManager.fetchListResult({
+                    apiService.getImageList(map)
+                }, object : TypeToken<List<AIPicResponseBean>>() {}, "getAIPicture")
+                _aiPictureInfoData.value = mAiPictureInfo
+            } finally {
+                _loading.postValue(false)  // 确保在请求完成后隐藏 loading
+            }
         }
     }
 
@@ -64,11 +67,14 @@ class AiViewModel(context: Context) : BaseViewModel(context) {
         map["description"] = description
         viewModelScope.launch {
             _loading.postValue(true)
-            val mAiPictureGenerateInfo = networkRequestManager.fetchListResult({
-                apiService.getImageGenerate(map)
-            }, object : TypeToken<List<AIPicResponseBean>>() {}, "getImageGenerate")
-            _aiPictureGenerateData.value = mAiPictureGenerateInfo
-            _loading.postValue(false)
+            try {
+                val mAiPictureGenerateInfo = networkRequestManager.fetchListResult({
+                    apiService.getImageGenerate(map)
+                }, object : TypeToken<List<AIPicResponseBean>>() {}, "getImageGenerate")
+                _aiPictureGenerateData.value = mAiPictureGenerateInfo
+            } finally {
+                _loading.postValue(false)  // 确保在请求完成后隐藏 loading
+            }
         }
     }
 
@@ -79,11 +85,14 @@ class AiViewModel(context: Context) : BaseViewModel(context) {
     fun getUpdateVersion() {
         viewModelScope.launch {
             _loading.postValue(true)
+            try {
             val mUpdateNumber = networkRequestManager.fetchResult({
                 apiService.getLatestVersion()
             }, UpdateAppBean::class.java, "getUpdateVersion")
             _versionNumber.value = mUpdateNumber
-            _loading.postValue(false)
+            } finally {
+                _loading.postValue(false)
+            }
         }
     }
 
