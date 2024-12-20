@@ -1,25 +1,30 @@
 package com.huiliang.aidemo.vm
 
 import android.content.Context
+import android.os.Environment
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
+import com.blankj.utilcode.util.LogUtils
 import com.google.gson.reflect.TypeToken
 import com.huiliang.aidemo.api.AiApi
 import com.huiliang.aidemo.bean.AIPicResponseBean
+import com.huiliang.aidemo.bean.UpdateAppBean
 import com.huiliang.lib_net.NetworkRequestManager
 import com.huiliang.lib_net.ResultByCoroutine
 import com.huiliang.lib_net.vm.BaseViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import java.io.File
+import java.io.FileOutputStream
+import java.net.HttpURLConnection
+import java.net.URL
 import java.util.WeakHashMap
 
 class AiViewModel(context: Context) : BaseViewModel(context) {
     private val networkRequestManager = NetworkRequestManager.getInstance(context)
     private val apiService = networkRequestManager.createService(AiApi::class.java)
-//    private val uploadPicService =
-//        networkRequestManager.createService(AiApi::class.java, SimpleConstant().UPLOAD_PIC_URL)
-
-//    private val mContext = context
 
     //loading弹窗
     private val _loading = MutableLiveData<Boolean>()
@@ -67,134 +72,76 @@ class AiViewModel(context: Context) : BaseViewModel(context) {
         }
     }
 
-//    //文生图
-//    private val _openAiPictureInfoData =
-//        MutableLiveData<ResultByCoroutine<List<VincentDiagramResponse>>>()
-//    val openAiPictureInfoData: LiveData<ResultByCoroutine<List<VincentDiagramResponse>>> =
-//        _openAiPictureInfoData
-//
-//    fun getOpenAIPicture(description: String) {
-//        val map = WeakHashMap<String, Any>()
-//        map["prompt"] = description
-//        map["n"] = 1
-//        map["model"] = "dall-e-3"
-//        map["size"] = "1024x1024"
-//        val json = Gson().toJson(map)
-//        val body = RequestBody.create("application/json".toMediaTypeOrNull(), json)
-//        viewModelScope.launch {
-//            _loading.postValue(true)
-//            val mOpenAiPictureInfo = networkRequestManager.fetchListResult({
-//                apiService.vincentDiagram(body)
-//            }, object : TypeToken<List<VincentDiagramResponse>>() {}, "getOpenAIPicture")
-//            _openAiPictureInfoData.value = mOpenAiPictureInfo
-//            _loading.postValue(false)
-//        }
-//    }
+    //获取版本号
+    private val _versionNumber = MutableLiveData<ResultByCoroutine<UpdateAppBean>>()
+    val versionNumber: LiveData<ResultByCoroutine<UpdateAppBean>> = _versionNumber
 
-//    fun downloadImage(url: String) {
-//        viewModelScope.launch(Dispatchers.IO) {
-//            val client = OkHttpClient()
-//            val request = Request.Builder().url(url).build()
-//            try {
-//                // 使用同步请求
-//                val response: Response = client.newCall(request).execute()
-//
-//                if (response.isSuccessful) {
-//                    val inputStream: InputStream? = response.body?.byteStream()
-//                    if (inputStream != null) {
-//                        val file = createImageFile()
-//                        if (file != null) {
-//                            saveImageToFile(inputStream, file)
-//                            uploadFile(file)
-//                        }
-//                    }
-//                } else {
-//                    LogUtils.e("DOWNLOAD", "Download failed: ${response.message}")
-//                    withContext(Dispatchers.Main) {
-//                        ToastUtils.showShort("Download failed")
-//                    }
-//                }
-//            } catch (e: IOException) {
-//                LogUtils.e("DOWNLOAD", "Error in downloading image", e)
-//                withContext(Dispatchers.Main) {
-//                    ToastUtils.showShort("Error in downloading image")
-//                }
-//            }
-//        }
-//    }
+    fun getUpdateVersion() {
+        viewModelScope.launch {
+            _loading.postValue(true)
+            val mUpdateNumber = networkRequestManager.fetchResult({
+                apiService.getLatestVersion()
+            }, UpdateAppBean::class.java, "getUpdateVersion")
+            _versionNumber.value = mUpdateNumber
+            _loading.postValue(false)
+        }
+    }
 
-//    private fun createImageFile(): File? {
-//        // 获取存储路径
-//        val storageDir = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-//            File(mContext.getExternalFilesDir(Environment.DIRECTORY_PICTURES), "MyApp")
-//        } else {
-//            File(
-//                Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES),
-//                "MyApp"
-//            )
-//        }
-//
-//        if (!storageDir.exists()) {
-//            storageDir.mkdirs()
-//        }
-//        // 获取当前时间（年月日时分秒）
-//        val currentDate = SimpleDateFormat("yyyyMMddHHmmss", Locale.getDefault()).format(Date())
-//        // 生成随机数
-//        val randomNum = Random.nextInt(1000, 9999)
-//
-//        // 创建文件名：image_当前时间_随机数.jpg
-//        val randomFileName = "image_${currentDate}_$randomNum.jpg"
-//        val file = File(storageDir, randomFileName)
-//
-//        return if (!file.exists()) {
-//            file.createNewFile()
-//            file
-//        } else {
-//            file
-//        }
-//    }
+    //下载更新
+    private val _downloadProgress = MutableLiveData<ResultByCoroutine<Int>>()
+    val downloadProgress: LiveData<ResultByCoroutine<Int>> = _downloadProgress
+    private val _downloadComplete = MutableLiveData<ResultByCoroutine<String>>()
+    val downloadComplete: LiveData<ResultByCoroutine<String>> = _downloadComplete
 
-//    private suspend fun saveImageToFile(inputStream: InputStream, file: File) {
-//        try {
-//            val outputStream: OutputStream = FileOutputStream(file)
-//            val buffer = ByteArray(1024)
-//            var length: Int
-//            while (inputStream.read(buffer).also { length = it } != -1) {
-//                outputStream.write(buffer, 0, length)
-//            }
-//            outputStream.flush()
-//
-//            // 显示保存成功消息
-//            withContext(Dispatchers.Main) {
-//                ToastUtils.showShort("Image saved to ${file.absolutePath}")
-//            }
-//        } catch (e: IOException) {
-//            LogUtils.e("DOWNLOAD", "Error saving image", e)
-//            withContext(Dispatchers.Main) {
-//                ToastUtils.showShort("Failed to save image")
-//            }
-//        } finally {
-//            inputStream.close()
-//        }
-//    }
+    fun downloadUpdate(urlString: String) {
+        viewModelScope.launch {
+            try {
+                // 确保下载操作在 IO 线程中进行
+                val filePath = withContext(Dispatchers.IO) {
+                    downloadFile(urlString)
+                }
+                _downloadComplete.postValue(ResultByCoroutine.Success(filePath))
+            } catch (e: Exception) {
+                _downloadComplete.postValue(ResultByCoroutine.Error(e))
+                LogUtils.e("Error downloading update", e)
+            }
+        }
+    }
 
-//    private val _uploadPicData = MutableLiveData<ResultByCoroutine<UploadPicResponse>>()
-//    val uploadPicData: LiveData<ResultByCoroutine<UploadPicResponse>> = _uploadPicData
+    //下载文件
+    private fun downloadFile(urlString: String): String {
+        val url = URL(urlString)
+        val connection = url.openConnection() as HttpURLConnection
+        connection.connect()
 
-//    // 上传图片到服务器
-//    @Throws(IOException::class)
-//    fun uploadFile(file: File) {
-//        val requestBody = RequestBody.create("image/jpeg".toMediaTypeOrNull(), file)
-//
-//        // 创建 MultipartBody.Part，表示文件部分
-//        val body = MultipartBody.Part.createFormData("file", file.name, requestBody)
-//        viewModelScope.launch {
-//            _loading.postValue(true)
-//            val mUploadPic = networkRequestManager.fetchResult({
-//                uploadPicService.uploadFile(body)
-//            }, UploadPicResponse::class.java, "uploadFile")
-//            _uploadPicData.value = mUploadPic
-//            _loading.postValue(false)
-//        }
-//    }
+        val fileLength = connection.contentLength
+        LogUtils.e("File length: $fileLength")
+
+        val outputFile = File(Environment.getExternalStorageDirectory(), "app-debug.apk")
+        LogUtils.e("Saving file to: " + outputFile.absolutePath)
+
+        try {
+            connection.inputStream.use { input ->
+                FileOutputStream(outputFile).use { output ->
+                    val data = ByteArray(4096)
+                    var total: Long = 0
+                    var count: Int
+                    while ((input.read(data).also { count = it }) != -1) {
+                        total += count.toLong()
+                        output.write(data, 0, count)
+
+                        // 更新下载进度
+                        val progress = (total * 100 / fileLength).toInt()
+                        LogUtils.e("Download progress: $progress%")
+                        _downloadProgress.postValue(ResultByCoroutine.Success(progress))
+                    }
+                    LogUtils.e("Download completed, total bytes: $total")
+                }
+            }
+        } finally {
+            connection.disconnect()
+        }
+
+        return outputFile.absolutePath
+    }
 }

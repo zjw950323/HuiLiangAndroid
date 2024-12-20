@@ -21,36 +21,31 @@ import com.huiliang.lib_base.ui.BaseActivity
  *    \/__/     \/__/     \/__/     \/__/
  */
 class MainActivity : BaseActivity<AiViewModel, ActivityMainBinding>() {
+
     override fun initContentLayoutId(): Int {
         return R.layout.activity_main
     }
 
     override fun initData() {
         super.initData()
-        val navController = Navigation.findNavController(this@MainActivity, R.id.nav_host_fragment)
-        mViewBinding.apply {
 
+        val navController = Navigation.findNavController(this@MainActivity, R.id.nav_host_fragment)
+
+        // 设置底部导航与NavController关联
+        mViewBinding.apply {
             NavigationUI.setupWithNavController(bottomNavigationView, navController)
 
-            // 监听 NavController 的变化，自动更新底部导航栏的选中项
-            navController.addOnDestinationChangedListener { _, destination, _ ->
-                when (destination.id) {
-                    R.id.vincentDiagramFragment -> bottomNavigationView.menu.findItem(R.id.vincentDiagramFragment).isChecked =
-                        true
-
-                    R.id.mapStorageFragment -> bottomNavigationView.menu.findItem(R.id.mapStorageFragment).isChecked =
-                        true
-                }
-            }
-            // 初始化时，设置默认选中的图标
+            // 初始化时，设置底部导航的选中项
             val currentDestination = navController.currentDestination
-            if (currentDestination?.id == R.id.vincentDiagramFragment) {
-                bottomNavigationView.menu.findItem(R.id.vincentDiagramFragment).isChecked = true
-            } else if (currentDestination?.id == R.id.mapStorageFragment) {
-                bottomNavigationView.menu.findItem(R.id.mapStorageFragment).isChecked = true
+            currentDestination?.let { destination ->
+                bottomNavigationView.menu.findItem(destination.id)?.isChecked = true
+            }
+
+            // 监听NavController的目的地变化，自动更新底部导航栏的选中项
+            navController.addOnDestinationChangedListener { _, destination, _ ->
+                bottomNavigationView.menu.findItem(destination.id)?.isChecked = true
             }
         }
-
     }
 
     override fun onSupportNavigateUp(): Boolean {
@@ -58,4 +53,11 @@ class MainActivity : BaseActivity<AiViewModel, ActivityMainBinding>() {
         return navController.navigateUp() || super.onSupportNavigateUp()
     }
 
+    // 通过NavController管理Fragment的状态，避免手动操作Fragment生命周期
+    override fun onBackPressed() {
+        val navController = Navigation.findNavController(this, R.id.nav_host_fragment)
+        if (!navController.navigateUp()) {
+            super.onBackPressed()  // 默认处理返回事件
+        }
+    }
 }

@@ -94,7 +94,7 @@ class NetworkRequestManager private constructor(
                 val apiResponse = response.body()
                 if (apiResponse != null) {
                     when (apiResponse.code) {
-                        0 -> {
+                        200 -> {
                             val dataJson = gson.toJson(apiResponse.data)
                             val dataObject = gson.fromJson(dataJson, type)
                             ResultByCoroutine.Success(dataObject)
@@ -145,24 +145,24 @@ class NetworkRequestManager private constructor(
             if (response.isSuccessful) {
                 val apiResponse = response.body()
                 if (apiResponse != null) {
-//                    when (apiResponse.code) {
-//                        0 -> {
-//                            val dataJson = gson.toJson(apiResponse.data)
-//                            val dataList: List<T> = gson.fromJson(dataJson, type.type)
-//                            ResultByCoroutine.Success(dataList)
-//                        }
-//
-//                        else -> errorHandler.handleApiError(apiResponse.code, apiResponse.msg)
-//                            .also {
-//                                LogUtils.e(
-//                                    "NetworkRequest",
-//                                    "Error in $requestName: ${apiResponse.msg}"
-//                                )
-//                            }
-//                    }
-                    val dataJson = gson.toJson(apiResponse.data)
-                    val dataList: List<T> = gson.fromJson(dataJson, type.type)
-                    ResultByCoroutine.Success(dataList)
+                    when (apiResponse.code) {
+                        200 -> {
+                            val dataJson = gson.toJson(apiResponse.data)
+                            val dataList: List<T> = gson.fromJson(dataJson, type.type)
+                            ResultByCoroutine.Success(dataList)
+                        }
+
+                        else -> errorHandler.handleApiError(apiResponse.code, apiResponse.msg)
+                            .also {
+                                LogUtils.e(
+                                    "NetworkRequest",
+                                    "Error in $requestName: ${apiResponse.msg}"
+                                )
+                            }
+                    }
+//                    val dataJson = gson.toJson(apiResponse.data)
+//                    val dataList: List<T> = gson.fromJson(dataJson, type.type)
+//                    ResultByCoroutine.Success(dataList)
                 } else {
                     errorHandler.handleError(HttpException(response)).also {
                         LogUtils.e("NetworkRequest", "Error in $requestName: No response body")

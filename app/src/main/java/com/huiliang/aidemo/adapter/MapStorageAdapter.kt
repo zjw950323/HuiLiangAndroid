@@ -14,6 +14,7 @@ import com.bumptech.glide.Glide
 import com.huiliang.aidemo.R
 import com.huiliang.aidemo.bean.AIPicResponseBean
 import com.huiliang.lib_base.utils.ImageSaver
+import com.huiliang.lib_net.SimpleConstant
 import com.xinlicheng.lib_base.adapter.BaseAdapter
 
 /**
@@ -45,7 +46,6 @@ class MapStorageAdapter(mContext: Context) :
             holder.apply {
                 val nightModeFlags: Int =
                     mContext.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
-                LogUtils.e(nightModeFlags)
                 if (nightModeFlags == Configuration.UI_MODE_NIGHT_YES) {
                     // 状态栏文字颜色变为白色
                     sizeColor = mContext.resources.getColor(R.color.white)
@@ -67,12 +67,14 @@ class MapStorageAdapter(mContext: Context) :
                     setTextColor(sizeColor)
                     text = "分辨率：${data.image_size}"
                 }
-                Glide.with(mContext).load(data.image_url).placeholder(R.mipmap.ic_launcher)
-                    .error(R.mipmap.error).into(ivPic)
+               val url = SimpleConstant().BASE_PIC_URL + data.image_name
+                Glide.with(mContext).load(url).placeholder(R.drawable.placeholder)
+                    .error(R.drawable.error).into(ivPic)
                 btSave.setOnClickListener {
+                    val picUrl = SimpleConstant().BASE_PIC_URL + data.image_name
                     val fileName = "network_image_${System.currentTimeMillis()}.jpg" // 自定义文件名
                     // 保存图片到相册
-                    ImageSaver.saveNetworkImageToGallery(mContext, data.image_url, fileName)
+                    ImageSaver.saveNetworkImageToGallery(mContext, picUrl, fileName)
                 }
             }
 

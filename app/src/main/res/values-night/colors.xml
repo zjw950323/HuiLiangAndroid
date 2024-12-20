@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- 夜间模式下的颜色 -->
+    <color name="bottom_nav_background">#FF000000</color>
+    <color name="color_57A5FF">#57A5FF</color>
+    <color name="white">#FFFFFFFF</color>
+    <color name="bottom_nav_item_color">
+        <selector>
+            <item android:color="@color/color_57A5FF" android:state_checked="true"/>
+            <item android:color="@color/white" android:state_checked="false"/>
+        </selector>
+    </color>
+</resources>

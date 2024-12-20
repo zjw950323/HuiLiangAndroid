@@ -54,7 +54,6 @@ abstract class BaseActivity<T : ViewModel, M : ViewDataBinding> : AppCompatActiv
         StatusBarUtil.transparencyBar(this) // 透明状态栏
         val nightModeFlags: Int =
             this.getResources().configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
-        LogUtils.e(nightModeFlags)
         if (nightModeFlags == Configuration.UI_MODE_NIGHT_YES) {
             // 状态栏文字颜色变为白色
             BarUtils.setStatusBarLightMode(this, false)

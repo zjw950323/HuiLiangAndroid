@@ -17,4 +17,5 @@ class SimpleConstant {
 //    val BASE_URL: String = "https://api.aigc369.com/"
 //    val BASE_URL: String = "http://192.168.20.2:5000/"
     val BASE_URL: String = "http://121.40.43.143:5000/"
+    val BASE_PIC_URL:String = "http://121.40.43.143/images/"
 }
