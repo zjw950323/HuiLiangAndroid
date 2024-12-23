@@ -70,7 +70,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
                 android:background="@null"
-                android:hint="请输入关键词"
+                android:hint="请输入任意关键词"
                 android:padding="@dimen/dp_10"
                 android:textColor="@color/black"
                 android:textColorHint="@color/black"
