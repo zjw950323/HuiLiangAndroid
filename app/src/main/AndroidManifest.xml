@@ -30,7 +30,7 @@
         android:theme="@style/Theme.AiDemo"
         tools:targetApi="31">
         <activity
-            android:name="com.huiliang.aidemo.ui.MainActivity"
+            android:name=".ui.MainActivity"
             android:screenOrientation="portrait"
             android:exported="true">
             <intent-filter>

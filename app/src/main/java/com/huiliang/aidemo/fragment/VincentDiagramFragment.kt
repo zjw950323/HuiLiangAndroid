@@ -4,8 +4,8 @@ import android.Manifest
 import android.graphics.drawable.Drawable
 import android.os.Build
 import android.text.Editable
+import android.text.TextUtils
 import android.text.TextWatcher
-import com.alibaba.android.arouter.utils.TextUtils
 import com.blankj.utilcode.util.AppUtils
 import com.blankj.utilcode.util.LogUtils
 import com.blankj.utilcode.util.ToastUtils

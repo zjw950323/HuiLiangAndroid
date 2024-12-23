@@ -11,7 +11,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.alibaba.android.arouter.launcher.ARouter
+//import com.alibaba.android.arouter.launcher.ARouter
 import com.blankj.utilcode.util.BarUtils
 import com.blankj.utilcode.util.LogUtils
 import com.huiliang.lib_base.utils.AppManager
@@ -67,7 +67,7 @@ abstract class BaseActivity<T : ViewModel, M : ViewDataBinding> : AppCompatActiv
         mViewBinding.lifecycleOwner = this
         AppManager.instance.addActivity(this)
 
-        ARouter.getInstance().inject(this) // 当ARouter框架跳转时接收参数页面需要这行代码
+//        ARouter.getInstance().inject(this) // 当ARouter框架跳转时接收参数页面需要这行代码
 
         bindClickListener()
         LogUtils.e(this.javaClass.simpleName)
@@ -120,7 +120,7 @@ abstract class BaseActivity<T : ViewModel, M : ViewDataBinding> : AppCompatActiv
     open fun bindClickListener() {}
 
     open fun initWidget() {
-        ARouter.getInstance().inject(this)
+//        ARouter.getInstance().inject(this)
     }
 
     open fun initData() {}

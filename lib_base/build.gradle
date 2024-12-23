@@ -30,11 +30,11 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
     }
     kotlinOptions {
-        jvmTarget = '1.8'
+        jvmTarget = '17'
     }
 
     dataBinding {
@@ -45,11 +45,11 @@ android {
     }
 }
 
-kapt {
-    arguments {
-        arg("AROUTER_MODULE_NAME", project.getName())
-    }
-}
+//kapt {
+//    arguments {
+//        arg("AROUTER_MODULE_NAME", project.getName())
+//    }
+//}
 
 dependencies {
 
@@ -65,19 +65,19 @@ dependencies {
     //retrofit2
     api libs.retrofit
     api libs.retrofit2.converter.gson
-    implementation libs.retrofit2.kotlin.coroutines.adapter
+    api libs.retrofit2.kotlin.coroutines.adapter
     api libs.converter.scalars//ConverterFactory的String依赖包
-    api libs.converter.simplexml//ConverterFactory的String依赖包
+//    api libs.converter.simplexml//ConverterFactory的String依赖包
     api libs.adapter.rxjava2
     //okhttp4
     api libs.com.squareup.okhttp3.okhttp2
     api libs.logging.interceptor
     //Arouter
-    api libs.arouter.api
-    kapt libs.arouter.compiler
+//    api libs.arouter.api
+//    kapt libs.arouter.compiler
     //Gilde
     api libs.com.github.bumptech.glide.glide3
-    annotationProcessor libs.compiler
+    kapt libs.compiler
     //协程
     api libs.kotlinx.coroutines.core
     api libs.org.jetbrains.kotlinx.kotlinx.coroutines.android
