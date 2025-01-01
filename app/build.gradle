@@ -8,13 +8,13 @@ def keystoreProperties = new Properties()
 keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
 
 android {
-    namespace 'com.huiliang.aidemo'
+    namespace 'com.huiliang.picturesque'
     compileSdk 34
     lint {
         disable += ['Instantiatable']
     }
     defaultConfig {
-        applicationId "com.huiliang.aidemo"
+        applicationId "com.huiliang.picturesque"
         minSdk 24
         targetSdk 34
         versionCode 1
